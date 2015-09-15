@@ -8,6 +8,7 @@ from django.core.urlresolvers import RegexURLResolver, RegexURLPattern
 from django.contrib.admindocs.views import simplify_regex
 
 from rest_framework.views import APIView
+from rest_framework_swagger import SWAGGER_SETTINGS
 
 from .apidocview import APIDocView
 
@@ -77,6 +78,11 @@ class UrlParser(object):
         """
         filtered_paths = set()
         base_path = self.__get_base_path__(root_paths)
+
+        api_groups = SWAGGER_SETTINGS.get('api_groups')
+        if api_groups is not None:
+           return [group['path'] for group in api_groups ]
+
         for path in root_paths:
             resource = path.replace(base_path, '').split('/')[0]
             filtered_paths.add(base_path + resource)
